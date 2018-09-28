@@ -1,12 +1,13 @@
 import numpy as np
-from utils import string_to_array, array_to_string
+from utils import string_to_array, array_to_string, longBitsToFloat, floatToRawLongBits
 
 class genetic_algorithm(object):
-    def __init__(self, generations, population_size, chromosome_size, fitness_function, 
-                                    selection_probability_function, pc=1.0, pm=0.001, seed=0):
+    def __init__(self, generations, population_size, fitness_function,
+                 lower_limit, upper_limit, selection_probability_function, pc=1.0, pm=0.001, seed=0):
         self.generations = generations
         self.population_size = population_size
-        self.chromosome_size = chromosome_size
+        self.lower_limit = lower_limit
+        self.upper_limit = upper_limit
         self.fitness = fitness_function
         self.selection_probability = selection_probability_function
         self.pc = pc
@@ -16,18 +17,24 @@ class genetic_algorithm(object):
         self.population_log = []
         np.random.seed(self.seed)
 
+#    def create_random_population(self):
+#        initial_population =  np.array([''.join(np.random.choice(a = ['0','1'], 
+#                                        size = self.chromosome_size)) for _ in range(self.population_size)])
+#        return initial_population
+        
     def create_random_population(self):
-        initial_population =  np.array([''.join(np.random.choice(a = ['0','1'], 
-                                        size = self.chromosome_size)) for _ in range(self.population_size)])
+        initial_population = np.random.uniform(self.lower_limit, self.upper_limit, self.population_size)
+        initial_population = np.array([bin(floatToRawLongBits(chromosome))[2:] for chromosome in initial_population])
+        for pop in initial_population: print(len(pop))
         return initial_population
 
     def mutation(self, chromosome):
         chromosome_array = string_to_array(chromosome)
-        flip = np.random.uniform(size=self.chromosome_size) <= self.pm
+        flip = np.random.uniform(size=len(chromosome)) <= self.pm
         return array_to_string(chromosome_array ^ flip)
 
     def crossover(self, chromosomeA, chromosomeB):
-        locus = np.random.randint(1, self.chromosome_size)
+        locus = np.random.randint(1, np.min([len(chromosomeA),len(chromosomeB)]))
         if np.random.random() <= self.pc:
             chromosomeAB = ''.join([chromosomeA[:locus],chromosomeB[locus:]])
             chromosomeBA = ''.join([chromosomeB[:locus],chromosomeA[locus:]])
@@ -35,8 +42,9 @@ class genetic_algorithm(object):
         return chromosomeA, chromosomeB
 
     def selection(self, population):
-        population_fitness = np.array([self.fitness(chromosome) for chromosome in population])
-        self.fitness_log.append([np.max(population_fitness),np.mean(population_fitness),np.min(population_fitness)])
+        population_fitness = np.array([self.fitness(longBitsToFloat(int(''.join(['0b', chromosome]),2))) for chromosome in population])
+        #population_fitness = np.array([self.fitness(chromosome) for chromosome in population])
+        self.fitness_log.append([np.max(population_fitness), np.mean(population_fitness), np.min(population_fitness)])
         reproduction_probability = self.selection_probability(population_fitness)
         selected_population = np.random.choice(a = [*range(self.population_size)],
                                                size=self.population_size, p=reproduction_probability)
@@ -60,3 +68,21 @@ class genetic_algorithm(object):
             population = self.pairing(selected_chromosomes, population)
             countdown -= 1
         self.last_population = population
+
+
+class chromosome(object):
+    def __init__(self,lower_bound,upper_bound):
+        self.lower_bound
+        self.upper_bound
+
+    def bit_assign(self):
+        int_part = int(self.lower_bound)
+        
+        
+        
+        self.sign_bits = 1
+        
+
+    sign = '1' if float_number < 0 else '0'
+
+    bits_int = len(bin(int_part))-2

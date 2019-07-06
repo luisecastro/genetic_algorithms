@@ -43,3 +43,9 @@ class chromosomeManipulation(object):
     
     def from_chromosome(self, x: list) -> float:
         return self.de_normalize(self.bin2dec(x))
+    
+    def update(self, lo: float, hi: float, k: int):
+        self.lo = lo
+        self.hi = hi
+        self.k = k
+        self.hilo = hi-lo

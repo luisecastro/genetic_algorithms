@@ -63,17 +63,3 @@ class genetic_algorithm(object):
             population = self.pairing(selected_chromosomes, population)
             countdown -= 1
         self.last_population = population
-
-
-class chromosome(object):
-    def __init__(self,lower_bound,upper_bound):
-        self.lower_bound
-        self.upper_bound
-
-    def bit_assign(self):
-        int_part = int(self.lower_bound)
-        self.sign_bits = 1
-        
-    sign = '1' if float_number < 0 else '0'
-
-    bits_int = len(bin(int_part))-2

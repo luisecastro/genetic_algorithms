@@ -16,11 +16,6 @@ class genetic_algorithm(object):
         self.fitness_log = []
         self.population_log = []
         np.random.seed(self.seed)
-
-#    def create_random_population(self):
-#        initial_population =  np.array([''.join(np.random.choice(a = ['0','1'], 
-#                                        size = self.chromosome_size)) for _ in range(self.population_size)])
-#        return initial_population
         
     def create_random_population(self):
         initial_population = np.random.uniform(self.lower_limit, self.upper_limit, self.population_size)
@@ -77,12 +72,8 @@ class chromosome(object):
 
     def bit_assign(self):
         int_part = int(self.lower_bound)
-        
-        
-        
         self.sign_bits = 1
         
-
     sign = '1' if float_number < 0 else '0'
 
     bits_int = len(bin(int_part))-2
